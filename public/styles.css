@@ -1,26 +1,31 @@
 .helloInput {
-  width: 200px;
+    width: 200px;
 }
 
-.title{
-  color: white;
+.title {
+    color: white;
 }
-.mainText{
-  color:white;
+
+.mainText a {
+    color: white;
 }
 
 body {
-  display: flex;
-  min-height: 100vh;
-  flex-direction: column;
-  background-color: #B783C3;
-
+    display: flex;
+    min-height: 100vh;
+    flex-direction: column;
+    background-color: #fffefa;
 }
 
-.page-footer{
-  background-color: #9E65A9;
+.page-footer {
+    background-color: #9E65A9;
 }
+
 main {
-  flex: 1 0 auto;
+    flex: 1 0 auto;
 }
-    
+
+.test-div div {
+    border: 1px solid black;
+    background-color: burlywood;
+}
