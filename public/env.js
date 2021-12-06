@@ -7,7 +7,7 @@ socket.on('number', (msg) => {
 
 function projectCard(project) {
   return `
-  <div class="col s6 m4 l3 xl2">
+  <div class="col s6 m4 l3 xl2" id="project-id-${project.projectID}">
     <div class="card">
       <div class="card-image">
         <img src="${project.img ? project.img : 'assets/ale.jpg'}">
@@ -17,11 +17,26 @@ function projectCard(project) {
         <p>${project.info}</p>
       </div>
       <div class="card-action">
-        <a href="project.html?pid=${project.projectID}">This is a link</a>
+        <a class="waves-effect waves-light btn" href="project.html?pid=${project.projectID}">Open</a>
+        <a class="waves-effect waves-light red btn" onClick="deleteProject(${project.projectID})"><i class="material-icons">delete</i></a>
       </div>
     </div>
   </div>`;
 }
+
+
+function deleteProject(id) {
+  var settings = {
+    "url": `/api/projects/${id}`,
+    "method": "DELETE",
+    "timeout": 0,
+  };
+
+  $.ajax(settings).done(function (response) {
+    $(`#project-id-${id}`).remove();
+  });
+}
+
 
 function getBase64(file) {
 
@@ -52,7 +67,7 @@ function createProject() {
           "img": d
         };
         var settings = {
-          "url": "/project",
+          "url": "/api/projects",
           "method": "POST",
           "timeout": 0,
           "headers": {
@@ -90,7 +105,7 @@ $(document).ready(function () {
 
 
   //test get call
-  $.get('/projects', (result) => {
+  $.get('/api/projects', (result) => {
     for (let p of result) {
       $('#projects-list').append(projectCard(p))
     }
