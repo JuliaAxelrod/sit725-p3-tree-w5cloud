@@ -17,10 +17,16 @@ app.use(express.json({ limit: '50mb' }));
 app.use('/api/projects', projectRouter);
 app.use('/api/students', studentRouter);
 
-app.get("/test", function (request, response) {
-    var user_name = request.query.user_name;
-    response.end("Hello " + user_name + "!");
+app.get("/addNumber/:n1/:n2", function (request, response) {
+    let n1 = parseInt(request.params.n1);
+    let n2 = parseInt(request.params.n2);
+    let result = n1 + n2 || null;
+    if (result == null) {
+        response.status(400).json({ statusCode: 400, err:'Both input should be a number'})
+    }
+    response.json({ statusCode: 200, result: result });
 });
+
 
 dbo.connect((err) => {
     if (err) {
