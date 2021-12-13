@@ -17,10 +17,20 @@ app.use(express.json({ limit: '50mb' }));
 app.use('/api/projects', projectRouter);
 app.use('/api/students', studentRouter);
 
-app.get("/test", function (request, response) {
-    var user_name = request.query.user_name;
-    response.end("Hello " + user_name + "!");
+app.get("/add/:n1/:n2", function (request, response) {
+    const a = parseInt(request.params.n1);
+    const b = parseInt(request.params.n2);
+    const result = a + b || null;
+    console.log(result);
+    if (result == null) {
+        response.status(400).json({error:'bad input, the input should be two numbers'});
+    } else {
+        response.json({ result: result });
+    }
+
 });
+
+
 
 dbo.connect((err) => {
     if (err) {
