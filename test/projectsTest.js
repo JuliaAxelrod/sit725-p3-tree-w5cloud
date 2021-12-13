@@ -10,6 +10,7 @@ describe("get all projects", () => {
     before((done) => {
         dbo.connect(() => {
             const projectsCollection = dbo.getDB().collection("projects");
+            projectsCollection.deleteMany({});
             for (let index = 1; index < 11; index++) {
                 projectsCollection.insertOne({
                     projectID: 'test' + index,
@@ -18,9 +19,10 @@ describe("get all projects", () => {
                     img: 'img ' + index
                 })
             }
-            setTimeout(()=>{
+            setTimeout(() => {
+                dbo.disconnect()
                 done();
-            },1000);
+            }, 1000);
         })
     });
 
@@ -51,11 +53,8 @@ describe("get all projects", () => {
     after(() => {
         dbo.connect(() => {
             const projectsCollection = dbo.getDB().collection("projects");
-            for (let index = 1; index < 11; index++) {
-                projectsCollection.deleteOne({
-                    projectID: 'test' + index,
-                })
-            }
+            projectsCollection.deleteMany({});
+            dbo.disconnect();
         })
     });
 
