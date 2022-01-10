@@ -1,8 +1,13 @@
 let socket = io();
 
-socket.on('number', (msg) => {
-  console.log('Random number: ' + msg);
+socket.on('project:update', (project) => {
+  $('#projects-list').append(projectCard(project));
 })
+
+socket.on('chat:broadcast', (msg) => {
+  $("#chat-msg-list").append(createMessage(msg, true));
+})
+
 
 
 function projectCard(project) {
@@ -77,7 +82,7 @@ function createProject() {
         };
 
         $.ajax(settings).done(function (response) {
-          $('#projects-list').append(projectCard(project))
+          // $('#projects-list').append(projectCard(project))
           $('#project-id').val('');
           $('#project-title').val('');
           $('#project-info').val('');
@@ -89,6 +94,12 @@ function createProject() {
     )
   }
 
+}
+
+function createMessage(msg, isRight = false) {
+  return `<p class="${isRight ? 'msg-right' : 'msg-left'}">
+    ${msg}
+  </p><br style="clear:both"/>`
 }
 
 
@@ -104,12 +115,32 @@ $(document).ready(function () {
   });
 
 
-  //test get call
+  //only works once when the page is fully loaded
   $.get('/api/projects', (result) => {
     for (let p of result) {
       $('#projects-list').append(projectCard(p))
     }
-
     console.log(result)
   })
+
+  $("#chat-send-btn").click(() => {
+    //send this message to the back-end server
+    socket.emit("chat:msg", $("#chat-msg").val());
+    //add this message to the chat msg list on the left side of screen
+    $("#chat-msg-list").append(createMessage($("#chat-msg").val()));
+    //clear the message input text
+    $("#chat-msg").val("");
+  });
+
+  //every half a second fetch the data and re-render the project list
+  // setInterval(() => {
+  //   $.get('/api/projects', (result) => {
+  //     $('#projects-list').empty();
+  //     for (let p of result) {
+  //       $('#projects-list').append(projectCard(p))
+  //     }
+  //     console.log(result)
+  //   })
+  // }, 500);
+
 })

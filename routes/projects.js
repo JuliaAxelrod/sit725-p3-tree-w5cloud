@@ -15,7 +15,7 @@ router.get('/:id', (req, res) => {
 
 
 router.post('/', (req, res) => {
-    projectService.insertProject(req.body, res);
+    projectService.insertProject(req.body, res, req.io);
 });
 
 router.put('/:id', (req, res) => {
