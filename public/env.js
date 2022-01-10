@@ -1,8 +1,17 @@
 let socket = io();
 
-socket.on('number', (msg) => {
-  console.log('Random number: ' + msg);
+socket.on('project:update', (p) => {
+  $('#projects-list').append(projectCard(p))
 })
+
+
+socket.on('chat:brodcast', (msg) => {
+  $('#msg-list').append(createChatMsg(msg,true))
+})
+
+function createChatMsg(msg, isRight) {
+  return `<p style="float:${isRight ? 'right' : 'left'}">${msg}</p><br style="clear:both"/>`;
+}
 
 
 function projectCard(project) {
@@ -77,7 +86,6 @@ function createProject() {
         };
 
         $.ajax(settings).done(function (response) {
-          $('#projects-list').append(projectCard(project))
           $('#project-id').val('');
           $('#project-title').val('');
           $('#project-info').val('');
@@ -104,12 +112,30 @@ $(document).ready(function () {
   });
 
 
-  //test get call
+  //Here this will fetch the list of all the projects every half a second
+  // setInterval(() => {
+  //   $.get('/api/projects', (result) => {
+  //     $('#projects-list').empty();
+  //     for (let p of result) {
+  //       $('#projects-list').append(projectCard(p))
+  //     }
+  //     console.log("data is refreshed");
+  //   })
+  // }, 500);
+
+  //get all the projects only once when we load the page
   $.get('/api/projects', (result) => {
     for (let p of result) {
       $('#projects-list').append(projectCard(p))
     }
-
-    console.log(result)
+    console.log("data is refreshed");
   })
+
+
+  $("#send-msg").click(() => {
+    socket.emit("chat:msg", $("#msg").val());
+    $('#msg-list').append(createChatMsg($("#msg").val(),false))
+    $("#msg").val('');
+  });
+
 })

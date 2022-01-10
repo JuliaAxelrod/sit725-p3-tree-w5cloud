@@ -23,9 +23,11 @@ const getProjectByID = (id, res) => {
     });
 }
 
-const insertProject = (project, res) => {
+const insertProject = (project, res, io) => {
     projectCollection.insertOne(project, (err, result) => {
         if (err) throw err;
+        //brodcast a message to all the active users that a new project is inserted
+        io.emit("project:update",project);
         res.send({ result: 204 });
     });
 }
